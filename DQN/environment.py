@@ -1,15 +1,15 @@
 import gym
 import numpy as np
 from gym import spaces
-from data_processor import DataProcessor
+from DQN.data_processor import DataProcessorDQN
 
-class DrugRecommendationEnv(gym.Env):
+class DrugRecommendationEnvDQN(gym.Env):
     """Custom Environment for Drug Recommendation System"""
     def __init__(self):
-        super(DrugRecommendationEnv, self).__init__()
+        super(DrugRecommendationEnvDQN, self).__init__()
         
         # Initialize data processor
-        self.data_processor = DataProcessor()
+        self.data_processor = DataProcessorDQN()
         
         # Get available drugs
         self.available_drugs = self.data_processor.get_available_drugs()

@@ -1,22 +1,23 @@
-from environment import DrugRecommendationEnv
-from dqn_agent import DQNAgent
+from DQN.environment import DrugRecommendationEnvDQN
+from DQN.dqn_agent import DQNAgent
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import os
 
 
 
 
-def train_DQNAgent(num_episodes=1500, batch_size=32, gamma=0.95):
+def train_DQNAgent(num_episodes=1500, batch_size=32, gamma=0.95, epsilon=1.0, epsilon_min=0.05, epsilon_decay=0.995):
     """Train the DQN agent"""
     # Initialize environment and agent
-    env = DrugRecommendationEnv()
+    env = DrugRecommendationEnvDQN()
     state_size = env.observation_space.shape[0]
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size, 
-                    epsilon=1.0,
-                    epsilon_min=0.05,  # Increased minimum exploration
-                    epsilon_decay=0.995)  # Slower decay
+                    epsilon=epsilon,
+                    epsilon_min=epsilon_min,  # Increased minimum exploration
+                    epsilon_decay=epsilon_decay)  # Slower decay
     
     # Training loop
     rewards = []
@@ -49,11 +50,21 @@ def train_DQNAgent(num_episodes=1500, batch_size=32, gamma=0.95):
         if episode % 100 == 0:
             print(f"Episode: {episode}, Total Reward: {total_reward:.3f}, Epsilon: {agent.epsilon:.2f}")
     
+    save_dir = 'trained_models/DQN'
+    os.makedirs(save_dir, exist_ok=True)
+
     # Save the trained model
-    agent.save('DQN/DQN_model.pth')
-    print("\nModel saved to DQN_model.pth")
+    if epsilon == epsilon_min or epsilon_decay == 1:
+        model_path = os.path.join(save_dir, 'DQN_fix_eps_model.pth')
+        agent.save(model_path)
+        print(f"\nModel saved to {model_path}")
+    else:
+        model_path = os.path.join(save_dir, 'DQN_var_eps_model.pth')
+        agent.save(model_path)
+        print(f"\nModel saved to {model_path}")
     
     return agent, rewards
+
 
 
 
@@ -79,40 +90,3 @@ def evaluate_DQNAgent(agent, env, n_episodes=100):
     print(f"\nEvaluation Results:")
     print(f"Average Reward over {n_episodes} episodes: {avg_reward:.2f}")
     
-    
-    
-    
-    
-    
-if __name__ == "__main__":
-    # Train the agent
-    tot_reward=[]
-    for run_ in tqdm(range(100)):
-        
-        trained_agent, rewards = train_DQNAgent()
-        tot_reward.append(rewards)
-
-    # Compute average rewards over runs
-    tot_reward = np.array(tot_reward)
-    mean_reward = np.mean(tot_reward, axis=0)
-    std_reward = np.std(tot_reward, axis=0)
-
-    # Plot with confidence interval
-    plt.figure(figsize=(10, 6))
-    plt.plot(mean_reward, label='Average Reward per Episode', color='blue')
-    plt.fill_between(range(len(mean_reward)), mean_reward - std_reward, mean_reward + std_reward,
-                     color='blue', alpha=0.2, label='±1 Std Dev')
-
-    plt.xlabel('Episode')
-    plt.ylabel('Reward')
-    plt.title('Training Performance of DQN Agent')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig("DQN/DQN_reward.png")
-    
-    # Create new environment for evaluation
-    eval_env = DrugRecommendationEnv()
-    
-    # Evaluate the trained agent
-    evaluate_DQNAgent(trained_agent, eval_env)

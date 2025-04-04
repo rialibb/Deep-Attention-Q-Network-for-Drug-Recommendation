@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
-class DataProcessor:
+class DataProcessorDAQN:
     def __init__(self):
         # Load data from data directory
         self.patient_data = pd.read_csv('DAQN/data/patient_data_1000_timeseries.csv')
@@ -46,8 +46,13 @@ class DataProcessor:
             patient_df = patient_data.copy()
         
         # Select and order features
+        bp_components = patient_df['blood_pressure'].str.split('/', expand=True)
+        patient_df['systolic'] = bp_components[0].astype(float)
+        patient_df['diastolic'] = bp_components[1].astype(float)
         obs_df = patient_df[self.numeric_features]
+        
         static_df = patient_df[self.categorical_features].drop_duplicates()
+        
         
         # Transform features
         obs_features = self.preprocessor_num.transform(obs_df)

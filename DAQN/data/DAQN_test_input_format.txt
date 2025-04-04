@@ -1,0 +1,24 @@
+# Input your patient data in the following format (one per line):
+# id,age,gender,blood_pressure,heart_rate,temperature,condition_1,condition_2,condition_3,allergies,time_step
+# Every patient id must be a time series of 5 datapoints
+# Add your patient data below this line:
+1,45,M,117/83,71,98.3,hypertension,diabetes,none,penicillin,t1
+1,45,M,119/80,71,98.8,hypertension,diabetes,none,penicillin,t2
+1,45,M,117/81,76,98.3,hypertension,diabetes,none,penicillin,t3
+1,45,M,120/79,69,98.8,hypertension,diabetes,none,penicillin,t4
+1,45,M,122/80,76,98.9,hypertension,diabetes,none,penicillin,t5
+2,62,F,138/87,71,98.6,hypertension,heart_failure,cholesterol,none,t1
+2,62,F,136/92,78,98.6,hypertension,heart_failure,cholesterol,none,t2
+2,62,F,139/92,77,98.6,hypertension,heart_failure,cholesterol,none,t3
+2,62,F,139/93,74,98.8,hypertension,heart_failure,cholesterol,none,t4
+2,62,F,136/91,73,98.7,hypertension,heart_failure,cholesterol,none,t5
+3,35,M,115/76,67,98.1,asthma,allergies,none,penicillin,t1
+3,35,M,113/74,64,98.5,asthma,allergies,none,penicillin,t2
+3,35,M,121/77,71,98.4,asthma,allergies,none,penicillin,t3
+3,35,M,121/76,70,98.4,asthma,allergies,none,penicillin,t4
+3,35,M,119/77,67,98.5,asthma,allergies,none,penicillin,t5
+4,51,F,128/80,74,98.7,depression,anxiety,none,none,t1
+4,51,F,129/81,73,98.8,depression,anxiety,none,none,t2
+4,51,F,123/79,67,98.9,depression,anxiety,none,none,t3
+4,51,F,130/85,71,98.8,depression,anxiety,none,none,t4
+4,51,F,121/81,68,98.6,depression,anxiety,none,none,t5

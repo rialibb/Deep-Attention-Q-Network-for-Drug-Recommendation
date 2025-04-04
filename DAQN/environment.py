@@ -2,16 +2,16 @@ import gym
 import numpy as np
 import random
 from gym import spaces
-from data_processor import DataProcessor
+from DAQN.data_processor import DataProcessorDAQN
 import torch
 
-class DrugRecommendationEnv(gym.Env):
+class DrugRecommendationEnvDAQN(gym.Env):
     """Custom Environment for Drug Recommendation System"""
     def __init__(self):
-        super(DrugRecommendationEnv, self).__init__()
+        super(DrugRecommendationEnvDAQN, self).__init__()
         
         # Initialize data processor
-        self.data_processor = DataProcessor()
+        self.data_processor = DataProcessorDAQN()
         
         # Get available drugs
         self.available_drugs = self.data_processor.get_available_drugs()
@@ -23,7 +23,7 @@ class DrugRecommendationEnv(gym.Env):
         # Calculate state size from preprocessed data
         pa_id = self.data_processor.patient_data['patient_id'].iloc[0]
         data_pa_id = self.data_processor.patient_data[self.data_processor.patient_data['patient_id']==pa_id].sort_values(by=['time_step'])
-        obs_features, static_features = self.data_processor.process_patient_data(data_pa_id[self.data_processor.numeric_features+self.data_processor.categorical_features])
+        obs_features, static_features = self.data_processor.process_patient_data(data_pa_id)
         obs_size = obs_features.shape[1]
         static_size = static_features.shape[1]
         
@@ -43,8 +43,7 @@ class DrugRecommendationEnv(gym.Env):
         """Reset environment to initial state"""
         # Randomly select a patient
         random_patient_id = random.choice(self.unique_ids)
-        self.state_data = self.data_processor.patient_data[self.data_processor.patient_data['patient_id']==random_patient_id].sort_values(by=['time_step'])\
-                                    [self.data_processor.numeric_features+self.data_processor.categorical_features]
+        self.state_data = self.data_processor.patient_data[self.data_processor.patient_data['patient_id']==random_patient_id].sort_values(by=['time_step'])
         
         # Process patient data
         self.obs_features, self.static_features= self.data_processor.process_patient_data(self.state_data)

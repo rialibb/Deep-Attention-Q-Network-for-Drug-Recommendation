@@ -2,3 +2,6 @@ matplotlib
 torch 
 numpy 
 gym
+scikit-learn
+pandas
+tqdm

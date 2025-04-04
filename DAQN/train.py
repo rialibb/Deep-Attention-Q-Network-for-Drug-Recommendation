@@ -1,20 +1,26 @@
-from environment import DrugRecommendationEnv
-from dqn_agent import DAQNAgent
+from DAQN.environment import DrugRecommendationEnvDAQN
+from DAQN.daqn_agent import DAQNAgent
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import os
 
 
 
 
-
-def train_DAQNAgent(num_episodes=1500, batch_size=32, gamma=0.95):
-    """Train the DQN agent"""
+def train_DAQNAgent(num_episodes=1500, batch_size=32, gamma=0.95, epsilon=1.0, epsilon_min=0.05, epsilon_decay=0.995):
+    """Train the DAQN agent"""
     # Initialize environment and agent
-    env = DrugRecommendationEnv()
+    env = DrugRecommendationEnvDAQN()
     obs_size, static_size = env.observation_space.shape
     action_size = env.action_space.n
-    agent = DAQNAgent(obs_size=obs_size, static_size=static_size, action_size=action_size, seq_len=5)
+    agent = DAQNAgent(obs_size=obs_size, 
+                      static_size=static_size, 
+                      action_size=action_size, 
+                      seq_len=5, 
+                      epsilon=epsilon, 
+                      epsilon_min=epsilon_min, 
+                      epsilon_decay=epsilon_decay)
     
     # Training loop
     rewards = []
@@ -48,10 +54,19 @@ def train_DAQNAgent(num_episodes=1500, batch_size=32, gamma=0.95):
         if episode % 100 == 0:
             print(f"Episode: {episode}, Total Reward: {total_reward:.3f}, Epsilon: {agent.epsilon:.2f}")
     
+    save_dir = 'trained_models/DAQN'
+    os.makedirs(save_dir, exist_ok=True)
+
     # Save the trained model
-    agent.save('DAQN/DAQN_model.pth')
-    print("\nModel saved to DAQN_model.pth")
-    
+    if epsilon == epsilon_min or epsilon_decay == 1:
+        model_path = os.path.join(save_dir, 'DAQN_fix_eps_model.pth')
+        agent.save(model_path)
+        print(f"\nModel saved to {model_path}")
+    else:
+        model_path = os.path.join(save_dir, 'DAQN_var_eps_model.pth')
+        agent.save(model_path)
+        print(f"\nModel saved to {model_path}")
+        
     return agent, rewards
 
 
@@ -81,40 +96,3 @@ def evaluate_DAQNAgent(agent, env, n_episodes=1000):
     print(f"\nEvaluation Results:")
     print(f"Average Reward over {n_episodes} episodes: {avg_reward:.2f}")
     
-    
-    
-    
-    
-    
-if __name__ == "__main__":
-    # Train the agent
-    tot_reward=[]
-    for run_ in tqdm(range(100)):
-        
-        trained_agent, rewards = train_DAQNAgent()
-        tot_reward.append(rewards)
-
-    # Compute average rewards over runs
-    tot_reward = np.array(tot_reward)
-    mean_reward = np.mean(tot_reward, axis=0)
-    std_reward = np.std(tot_reward, axis=0)
-
-    # Plot with confidence interval
-    plt.figure(figsize=(10, 6))
-    plt.plot(mean_reward, label='Average Reward per Episode', color='blue')
-    plt.fill_between(range(len(mean_reward)), mean_reward - std_reward, mean_reward + std_reward,
-                     color='blue', alpha=0.2, label='±1 Std Dev')
-
-    plt.xlabel('Episode')
-    plt.ylabel('Reward')
-    plt.title('Training Performance of DAQN Agent')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig("DAQN/DAQN_reward.png")
-    
-    # Create new environment for evaluation
-    eval_env = DrugRecommendationEnv()
-    
-    # Evaluate the trained agent
-    evaluate_DAQNAgent(trained_agent, eval_env)

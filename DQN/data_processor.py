@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
-class DataProcessor:
+class DataProcessorDQN:
     def __init__(self):
         # Load data from data directory
         self.patient_data = pd.read_csv('DQN/data/patient_data_1000.csv')
