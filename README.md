@@ -1,60 +1,79 @@
-# Drug Recommendation System using Reinforcement Learning
+# Deep Attention Q-Network for Drug Recommendation
 
-This project implements a drug recommendation system using Deep Q-Learning (DQN) and Deep Q attention network, a reinforcement learning algorithm. The system learns to recommend appropriate medications based on patient conditions and treatment outcomes.
+This project implements a drug recommendation system using reinforcement learning, specifically comparing a standard Deep Q-Network (DQN) and a Deep Attention Q-Network (DAQN). The goal is to recommend the most effective drug to a patient based on both static and time-series health data.
 
-## Project Structure
+![DAQN Architecture](plots/DAQN_architecture.png)
+
+## 📌 Project Structure
 
 ```
-drug_recommendation/
-├── environment.py      # Custom OpenAI Gym environment for drug recommendations
-├── dqn_agent.py       # Implementation of the DQN agent
-└── train.py           # Training and evaluation script
+.
+├── DQN/                          # DQN model, environment, data processor
+├── DAQN/                         # DAQN model, attention-based architecture
+├── trained_models/               # Saved model checkpoints
+├── plots/                        # Generated performance plots
+├── pipelines.py                  # Experiment pipelines (comparison, ablations, testing)
+├── main.py                       # Entry point for running tests and evaluations
+├── README.md                     # Project documentation
+└── requirements.txt              # Dependencies
 ```
 
-## Features
+## 🧠 Models
 
-- Custom environment simulating patient-drug interactions
-- Deep Q-Network (DQN) implementation with experience replay
-- Patient state representation with 10 features (age, conditions, vitals, etc.)
-- Synthetic drug effectiveness modeling
-- Training and evaluation pipelines
+- **DQN (Deep Q-Network)**: Uses a feedforward neural network and single patient snapshot to predict drug actions.
+- **DAQN (Deep Attention Q-Network)**: Incorporates Transformer decoder to attend over patient time-series data for more informed decision making.
 
-## Requirements
+## 🧪 Pipelines
 
-- Python 3.7+
-- PyTorch
-- OpenAI Gym
-- NumPy
-- Other dependencies in requirements.txt
+- `compare_DAQN_vs_DQN`: Evaluate overall performance of DAQN vs DQN.
+- `run_DAQN_epsilon_comparator`: Compare fixed and variable epsilon strategies.
+- `run_DAQN_gamma_comparator`: Analyze effect of discount factor (γ) values.
+- `test_model`: Load trained model and recommend drugs for real test patient profiles.
 
-## Installation
+## 🧬 Data
+
+- **Patient Data**:
+  - DQN uses individual snapshots: `patient_data_1000.csv`
+  - DAQN uses sequences: `patient_data_1000_timeseries.csv`
+- **Drug Data**:
+  - Contains drug ID, name, effectiveness, conditions, contraindications, and side effects.
+
+## 🚀 How to Run
 
 1. Clone the repository
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   git clone https://github.com/rialibb/Deep-Attention-Q-Network-for-Drug-Recommendation.git
+   cd Deep-Attention-Q-Network-for-Drug-Recommendation
+   ```
 
-## Usage
+2. Install dependencies (ideally in a virtual environment)
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-To train the model:
-```bash
-python drug_recommendation/train.py
-```
+3. Train or test the model
+   ```bash
+   python main.py  # You can configure it to run specific pipeline
+   ```
 
-## Technical Details
+4. View results in the `plots/` directory.
 
-### Environment
-- State space: 10-dimensional continuous space representing patient features
-- Action space: Discrete space of available drugs
-- Reward: Based on drug effectiveness for patient condition
+## 📈 Results Summary
 
-### DQN Agent
-- Two-network architecture (main and target networks)
-- Experience replay with fixed-size memory
-- Epsilon-greedy exploration strategy
-- Periodic target network updates
+- DAQN shows improved performance over DQN due to sequence modeling.
+- Variable epsilon strategy leads to better exploration-exploitation balance.
+- Discount factor γ has limited effect due to single-step reward design.
 
-## Note
+## 🛠 Requirements
 
-This is a simplified simulation for educational purposes. Real medical recommendations should always be made by qualified healthcare professionals.
+- matplotlib 
+- torch 
+- numpy 
+- gym
+- scikit-learn
+- pandas
+- tqdm
+
+## 🤝 Acknowledgements
+
+Developed for educational and experimental purposes to explore attention-based reinforcement learning in medical decision-making.
