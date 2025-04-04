@@ -78,8 +78,8 @@ This project implements a drug recommendation system using reinforcement learnin
 
 This project is inspired by the paper:
 
-> **"Drug Recommendation via Time-Aware Deep Attention Q-Networks"**  
-> *Xiaoyu Li, Yu Su, Lingfei Wu, Yuankai Qi, Arjun Mukherjee, Xifeng Yan*  
-> [arXiv:2209.09428](https://arxiv.org/abs/2209.09428)
+> **"Deep Attention Q-Network for Personalized Treatment Recommendation"**  
+> *Simin Ma, Junghwan Lee, Nicoleta Serban, Shihao Yang*  
+> [arXiv:2209.09428](https://arxiv.org/abs/2307.01519)
 
 We gratefully acknowledge the authors for their foundational contribution.
