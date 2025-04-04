@@ -15,6 +15,7 @@ This project implements a drug recommendation system using reinforcement learnin
 ├── pipelines.py                  # Experiment pipelines (comparison, ablations, testing)
 ├── main.py                       # Entry point for running tests and evaluations
 ├── README.md                     # Project documentation
+├── REPORT.pdf                    # The report of the project. The code correspond to section 3 of the report
 └── requirements.txt              # Dependencies
 ```
 
