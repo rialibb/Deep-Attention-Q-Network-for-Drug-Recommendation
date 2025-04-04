@@ -76,4 +76,10 @@ This project implements a drug recommendation system using reinforcement learnin
 
 ## 🤝 Acknowledgements
 
-Developed for educational and experimental purposes to explore attention-based reinforcement learning in medical decision-making.
+This project is inspired by the paper:
+
+> **"Drug Recommendation via Time-Aware Deep Attention Q-Networks"**  
+> *Xiaoyu Li, Yu Su, Lingfei Wu, Yuankai Qi, Arjun Mukherjee, Xifeng Yan*  
+> [arXiv:2209.09428](https://arxiv.org/abs/2209.09428)
+
+We gratefully acknowledge the authors for their foundational contribution.
