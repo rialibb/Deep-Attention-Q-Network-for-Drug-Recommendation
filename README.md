@@ -1,6 +1,6 @@
 # Drug Recommendation System using Reinforcement Learning
 
-This project implements a drug recommendation system using Deep Q-Learning (DQN), a reinforcement learning algorithm. The system learns to recommend appropriate medications based on patient conditions and treatment outcomes.
+This project implements a drug recommendation system using Deep Q-Learning (DQN) and Deep Q attention network, a reinforcement learning algorithm. The system learns to recommend appropriate medications based on patient conditions and treatment outcomes.
 
 ## Project Structure
 
