@@ -9,7 +9,28 @@ import os
 
 
 def train_DAQNAgent(num_episodes=1500, batch_size=32, gamma=0.95, epsilon=1.0, epsilon_min=0.05, epsilon_decay=0.995):
-    """Train the DAQN agent"""
+    """
+    Trains the DAQN (Deep Attention Q-Network) agent in the custom drug recommendation environment.
+
+    Parameters:
+    - num_episodes (int): Total number of training episodes.
+    - batch_size (int): Number of experiences used per training batch.
+    - gamma (float): Discount factor for future rewards.
+    - epsilon (float): Initial exploration rate for epsilon-greedy policy.
+    - epsilon_min (float): Minimum exploration rate.
+    - epsilon_decay (float): Decay rate of epsilon per episode.
+
+    Returns:
+    - agent (DAQNAgent): The trained DAQN agent.
+    - rewards (list[float]): List of total rewards obtained per episode.
+
+    Description:
+    - Initializes the DAQN agent and environment.
+    - For each episode, the agent interacts with the environment using an epsilon-greedy policy.
+    - Stores transitions in memory and trains using experience replay.
+    - Periodically prints training progress and saves the trained model at the end.
+    """
+    
     # Initialize environment and agent
     env = DrugRecommendationEnvDAQN()
     obs_size, static_size = env.observation_space.shape
@@ -76,6 +97,22 @@ def train_DAQNAgent(num_episodes=1500, batch_size=32, gamma=0.95, epsilon=1.0, e
 
 
 def evaluate_DAQNAgent(agent, env, n_episodes=1000):
+    """
+    Evaluates a trained DAQN agent over a number of test episodes.
+
+    Parameters:
+    - agent (DAQNAgent): The trained DAQN agent to evaluate.
+    - env (DrugRecommendationEnvDAQN): The drug recommendation environment.
+    - n_episodes (int): Number of episodes to run for evaluation.
+
+    Returns:
+    - None (prints average reward over evaluation episodes).
+
+    Description:
+    - Runs the agent in the environment for `n_episodes` using a greedy policy.
+    - Tracks and prints the average reward to assess performance on unseen patients.
+    """
+    
     total_rewards = []
     
     for episode in range(n_episodes):

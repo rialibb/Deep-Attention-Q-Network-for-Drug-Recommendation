@@ -6,7 +6,25 @@ from DAQN.data_processor import DataProcessorDAQN
 import torch
 
 class DrugRecommendationEnvDAQN(gym.Env):
-    """Custom Environment for Drug Recommendation System"""
+    """
+    Custom Gym environment for the DAQN agent to simulate drug recommendation using sequential patient data.
+
+    Description:
+    - Uses a time-series representation of patient data (5 time steps per patient).
+    - The state consists of dynamic numerical features (observation history) and static categorical features (e.g., conditions).
+    - The reward is computed based on drug effectiveness, matching with conditions, presence of contraindications, allergies, and side effects.
+
+    Attributes:
+    - observation_space (gym.Space): Tuple of (obs_size, static_size) representing the input to the DAQN model.
+    - action_space (gym.Discrete): Discrete set of possible drug actions (each drug has a unique action index).
+
+    Methods:
+    - reset() -> tuple(torch.Tensor, torch.Tensor): 
+        Resets the environment by randomly selecting a patient's 5-step sequence and returns the preprocessed state.
+    - step(action: int) -> tuple(tuple, float, bool, dict):
+        Executes the action (drug ID), computes the reward, and returns the new state, reward, done flag, and info.
+    """
+    
     def __init__(self):
         super(DrugRecommendationEnvDAQN, self).__init__()
         

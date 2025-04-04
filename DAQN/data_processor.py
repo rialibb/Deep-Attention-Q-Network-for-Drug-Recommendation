@@ -5,6 +5,30 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
 class DataProcessorDAQN:
+    """
+    Utility class for preprocessing time-series patient data and computing drug effectiveness for the DAQN model.
+
+    Description:
+    - Handles the transformation of sequential numeric observations and static categorical information.
+    - Processes patient data into normalized and one-hot encoded vectors for use by the DAQN agent.
+    - Computes the drug effectiveness score based on condition matches and contraindications.
+
+    Methods:
+    - process_patient_data(patient_data: pd.DataFrame) -> Tuple[np.ndarray, scipy.sparse.csr_matrix]:
+        Transforms a patient's sequential record into numerical and categorical features.
+        Inputs:
+            - patient_data: pd.DataFrame or pd.Series (must contain at least 5 time steps).
+        Outputs:
+            - obs_features: np.ndarray of shape (seq_len, num_features)
+            - static_features: sparse matrix of shape (1, categorical_encoding_size)
+
+    - get_available_drugs() -> List[int]:
+        Returns a list of all drug IDs present in the drug dataset.
+
+    - get_drug_effectiveness(drug_id: int, static_features: sparse matrix) -> float:
+        Computes a score [0, 1] for a drug based on patient’s categorical data, checking matches and contraindications.
+    """
+    
     def __init__(self):
         # Load data from data directory
         self.patient_data = pd.read_csv('DAQN/data/patient_data_1000_timeseries.csv')

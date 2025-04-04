@@ -8,6 +8,38 @@ import torch.nn.functional as F
 
 
 class DQNAgent:
+    """
+    Deep Q-Network (DQN) agent for learning drug recommendation policies from tabular patient data.
+
+    Attributes:
+    - state_size (int): Dimensionality of patient state input.
+    - action_size (int): Number of possible drug actions.
+    - memory (deque): Experience replay buffer.
+    - gamma (float): Discount factor for future rewards.
+    - epsilon (float): Exploration probability.
+    - epsilon_min (float): Minimum exploration threshold.
+    - epsilon_decay (float): Decay rate for epsilon after each episode.
+    - model (nn.Module): Neural network predicting Q-values for actions.
+    - optimizer (torch.optim): Optimizer for training the model.
+    - device (torch.device): CPU or GPU.
+
+    Methods:
+    - act(state: np.ndarray, evaluate: bool) -> int:
+        Returns an action using the epsilon-greedy strategy.
+
+    - remember(state, action, reward, next_state, done):
+        Stores experience in replay buffer.
+
+    - replay(batch_size: int, gamma: float):
+        Samples a batch and trains the Q-network using smooth L1 loss.
+
+    - save(path: str):
+        Saves the model state and optimizer to file.
+
+    - load(path: str):
+        Loads model and optimizer from a saved checkpoint.
+    """
+    
     def __init__(self, state_size, action_size, epsilon=1.0, epsilon_min=0.05, epsilon_decay=0.995):
         self.state_size = state_size
         self.action_size = action_size

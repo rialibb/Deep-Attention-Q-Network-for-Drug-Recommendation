@@ -10,6 +10,23 @@ import torch.nn.functional as F
 
 
 class PositionalEncoding(nn.Module):
+    """
+    Adds fixed sinusoidal positional encodings to a sequence of input embeddings.
+
+    Purpose:
+    - Enables the model to capture the order of elements in a sequence, which is crucial for modeling time dependencies.
+
+    Args:
+        d_model (int): Dimensionality of the input embeddings.
+        max_len (int): Maximum sequence length to support (default is 100).
+
+    Inputs:
+        x (torch.Tensor): Input tensor of shape (batch_size, seq_len, d_model)
+
+    Returns:
+        torch.Tensor: The input tensor with positional encodings added, same shape as input.
+    """
+    
     def __init__(self, d_model, max_len=100):
         super(PositionalEncoding, self).__init__()
         # Create constant 'pe' matrix with values dependent on pos and i
@@ -39,19 +56,35 @@ class PositionalEncoding(nn.Module):
     
     
 class DAQN(nn.Module):
+    """
+    Deep Attention Q-Network (DAQN) model combining a Transformer-based attention mechanism over patient observation 
+    sequences and static patient features for drug recommendation.
+
+    Purpose:
+    - Learns to predict Q-values (expected returns) for drug choices based on temporal patient data and static profile.
+
+    Args:
+        obs_size (int): Dimension of each observation in the sequence.
+        static_size (int): Dimension of static patient features.
+        model_dim (int): Embedding dimension used throughout the network.
+        action_size (int): Number of discrete drug actions.
+        seq_len (int): Number of time steps in the patient observation sequence.
+        n_layers (int): Number of Transformer decoder layers.
+        n_heads (int): Number of attention heads in each decoder layer.
+        ff_dim (int): Dimension of feedforward layers in the Transformer.
+        dropout (float): Dropout rate used in the Transformer layers.
+
+    Inputs:
+        obs_history (torch.Tensor): Tensor of shape (batch_size, seq_len, obs_size) representing time series data.
+        static_info (torch.Tensor): Tensor of shape (batch_size, static_size) for static patient data.
+
+    Returns:
+        torch.Tensor: Q-values for each possible action, shape (batch_size, action_size).
+    """
+    
     def __init__(self, obs_size, static_size, model_dim, action_size,
                  seq_len, n_layers=4, n_heads=4, ff_dim=128, dropout=0.1):
-        """
-        obs_size: dimension of each observation in the history.
-        static_size: dimension of the static patient info.
-        model_dim: embedding dimension.
-        action_size: number of discrete actions.
-        seq_len: length of the observation history.
-        n_layers: number of Transformer decoder layers.
-        n_heads: number of attention heads.
-        ff_dim: feedforward network dimension inside Transformer.
-        dropout: dropout rate.
-        """
+        
         super(DAQN, self).__init__()
         self.seq_len = seq_len
         self.model_dim = model_dim
@@ -117,6 +150,44 @@ class DAQN(nn.Module):
     
 
 class DAQNAgent:
+    """
+    Deep Attention Q-Network Agent for Reinforcement Learning-based Drug Recommendation.
+
+    Purpose:
+    - Implements experience replay, epsilon-greedy exploration, and training using temporal patient data with attention.
+
+    Args:
+        obs_size (int): Dimension of each observation vector in the sequence.
+        static_size (int): Dimension of static patient data.
+        action_size (int): Number of discrete actions (drugs).
+        model_dim (int): Embedding size used in the Transformer (default: 64).
+        seq_len (int): Length of the input observation history (default: 5).
+        n_layers (int): Number of decoder layers in the Transformer.
+        n_heads (int): Number of attention heads per layer.
+        ff_dim (int): Feedforward layer dimension inside Transformer.
+        dropout (float): Dropout rate (default: 0.1).
+        epsilon (float): Initial exploration rate (default: 1.0).
+        epsilon_min (float): Minimum exploration rate (default: 0.05).
+        epsilon_decay (float): Decay factor for epsilon (default: 0.995).
+
+    Methods:
+        - remember(state, action, reward, next_state, done): stores transition in memory.
+        - act(obs_features, static_features, evaluate=False): selects action using ε-greedy strategy.
+        - replay(batch_size, gamma): samples and trains on a mini-batch of transitions.
+        - save(path): saves model weights and optimizer state.
+        - load(path): loads model weights and optimizer state.
+
+    Inputs:
+        state (Tuple[Tensor, Tensor]): Tuple containing observation sequence and static info.
+        action (int): Selected drug index.
+        reward (float): Received reward.
+        next_state (Tuple[Tensor, Tensor]): Next patient state.
+        done (bool): Episode termination flag.
+
+    Returns:
+        - Action index or updated weights depending on method.
+    """
+    
     def __init__(self,  obs_size, static_size, action_size, model_dim=64, seq_len=5, n_layers=4, n_heads=4, ff_dim=128, dropout=0.1, epsilon=1.0, epsilon_min=0.05, epsilon_decay=0.995):
         self.action_size = action_size
         self.memory = deque(maxlen=10000)

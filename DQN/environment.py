@@ -4,7 +4,29 @@ from gym import spaces
 from DQN.data_processor import DataProcessorDQN
 
 class DrugRecommendationEnvDQN(gym.Env):
-    """Custom Environment for Drug Recommendation System"""
+    """
+    Custom OpenAI Gym environment for drug recommendation using a DQN-based approach.
+
+    This environment models the interaction between a patient (state) and a drug recommendation (action).
+    Rewards are based on effectiveness, condition matching, contraindications, and side effects.
+
+    Attributes:
+    - data_processor (DataProcessorDQN): Handles feature extraction and preprocessing.
+    - available_drugs (List[int]): List of valid drug IDs.
+    - n_drugs (int): Number of available drug actions.
+    - state_size (int): Dimension of patient state features.
+    - action_space (gym.spaces.Discrete): Discrete space of drug actions.
+    - observation_space (gym.spaces.Box): Continuous state feature space.
+    - state (np.ndarray): Current patient state.
+    
+    Methods:
+    - reset() -> np.ndarray:
+        Resets the environment by selecting a new random patient.
+    
+    - step(action: int) -> Tuple[np.ndarray, float, bool, dict]:
+        Applies the selected drug action to the patient, computes reward, and ends the episode.
+    """
+
     def __init__(self):
         super(DrugRecommendationEnvDQN, self).__init__()
         

@@ -20,6 +20,22 @@ import pandas as pd
 
 
 def comapre_DAQN_vs_DQN(num_runs = 100, num_episodes=1500):
+    """
+    Compare the performance of DAQN and DQN agents over multiple training runs.
+
+    Parameters:
+    - num_runs (int): Number of training repetitions to average over.
+    - num_episodes (int): Number of training episodes per run.
+
+    Returns:
+    - None. Saves a plot comparing average reward trajectories of DAQN and DQN.
+
+    Description:
+    Trains both DAQN and DQN agents across multiple runs and episodes, 
+    computes the mean and standard deviation of rewards, and visualizes 
+    the learning curves with confidence intervals for performance comparison.
+    """
+    
     # Train the agents
     tot_reward_daqn = []
     tot_reward_dqn = []
@@ -60,7 +76,6 @@ def comapre_DAQN_vs_DQN(num_runs = 100, num_episodes=1500):
     plt.xlabel('Episode')
     plt.ylabel('Average Reward')
     plt.title('Performance of DAQN vs DQN')
-    plt.yscale('log')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -81,6 +96,26 @@ def run_DAQN_epsilon_comparator(fix_eps = 0.1,
                                 var_eps_decay = 0.995,
                                 num_runs = 100,
                                 num_episodes=1500):
+    """
+    Compare DAQN performance using fixed vs decreasing epsilon-greedy exploration strategies.
+
+    Parameters:
+    - fix_eps (float): Fixed epsilon value for exploration.
+    - var_eps_start (float): Initial epsilon value for variable strategy.
+    - var_eps_min (float): Minimum epsilon for variable strategy.
+    - var_eps_decay (float): Decay rate of epsilon over episodes.
+    - num_runs (int): Number of training runs for averaging.
+    - num_episodes (int): Number of training episodes per run.
+
+    Returns:
+    - None. Saves a plot comparing average rewards for both exploration strategies.
+
+    Description:
+    Trains the DAQN agent under both fixed and decaying epsilon strategies,
+    computes average and standard deviation of rewards over multiple runs,
+    and visualizes the difference in learning behavior through a reward plot.
+    """
+    
     # Train the agents
     tot_reward_fix_eps = []
     tot_reward_var_eps = []
@@ -121,7 +156,6 @@ def run_DAQN_epsilon_comparator(fix_eps = 0.1,
     plt.xlabel('Episode')
     plt.ylabel('Average Reward')
     plt.title('DAQN: Fixed vs decreasing Epsilon Comparison')
-    plt.yscale('log')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -138,6 +172,24 @@ def run_DAQN_epsilon_comparator(fix_eps = 0.1,
 def run_DAQN_gamma_comparator(gamma_values=[1.0, 0.95, 0.9],
                               num_runs=100,
                               num_episodes=1500):
+    """
+    Compare DAQN performance across different discount factor (gamma) values.
+
+    Parameters:
+    - gamma_values (list of float): List of discount factors to evaluate.
+    - num_runs (int): Number of training runs per gamma value.
+    - num_episodes (int): Number of training episodes per run.
+
+    Returns:
+    - None. Saves a plot visualizing reward trends across gamma settings.
+
+    Description:
+    Trains the DAQN agent using various gamma values to assess the impact 
+    of long-term vs short-term reward prioritization. Plots average reward 
+    evolution with confidence intervals for comparison.
+    Note: In our setup with one-step episodes, gamma has minimal influence.
+    """
+    
     all_means = {}
     all_stds = {}
 
@@ -170,7 +222,6 @@ def run_DAQN_gamma_comparator(gamma_values=[1.0, 0.95, 0.9],
     plt.xlabel('Episode')
     plt.ylabel('Average Reward')
     plt.title('DAQN: Comparison Across Discount Factors (γ)')
-    plt.yscale('log')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -188,7 +239,23 @@ def run_DAQN_gamma_comparator(gamma_values=[1.0, 0.95, 0.9],
     
     
 def test_model(model_path='trained_models/DAQN/DAQN_var_eps_model.pth', test_file='DAQN/data/DAQN_test_input_format.txt'):
-    """Test the trained model with patient data from file"""
+    """
+    Evaluate a trained DQN or DAQN model on a custom set of patients and return drug recommendations.
+
+    Parameters:
+    - model_path (str): Path to the saved model file (.pth) for DQN or DAQN.
+    - test_file (str): Path to the test patient input file (.txt or .csv).
+
+    Returns:
+    - None. Prints recommended drugs with reasoning for each patient in the test file.
+
+    Description:
+    This function loads a trained model and a set of test patient profiles, processes the data,
+    and generates drug recommendations for each patient. It selects the best drug among the top-5
+    predicted actions based on clinical relevance: condition matching, contraindications, allergies,
+    and side effects. Works for both DQN (single-step input) and DAQN (sequence input) depending on the file prefix.
+    """
+    
     try:
         # Load test data
         test_data = load_test_data(test_file)
@@ -330,7 +397,21 @@ def test_model(model_path='trained_models/DAQN/DAQN_var_eps_model.pth', test_fil
 
 
 def load_test_data(file_path):
-    """Load patient data from test file"""
+    """
+    Load and parse patient test data from a formatted text file.
+
+    Parameters:
+    - file_path (str): Path to the input test file (.txt) containing patient records.
+
+    Returns:
+    - pd.DataFrame: A pandas DataFrame containing the parsed patient data with appropriate column names.
+
+    Description:
+    This function reads a test file containing patient information, filters out comments and blank lines,
+    and loads the content into a DataFrame. It dynamically adjusts the schema by adding a 'time_step' column
+    if the file corresponds to DAQN input format (detected via filename prefix).
+    """
+    
     with open(file_path, 'r') as f:
         lines = f.readlines()
     

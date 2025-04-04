@@ -5,6 +5,32 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
 class DataProcessorDQN:
+    """
+    Handles preprocessing and feature transformation of patient and drug data for use in the DQN model.
+
+    Attributes:
+    - patient_data (pd.DataFrame): Dataset containing patient attributes.
+    - drug_data (pd.DataFrame): Dataset containing drug details and associated metadata.
+    - numeric_features (list[str]): List of continuous feature names (e.g., age, heart rate).
+    - categorical_features (list[str]): List of categorical features (e.g., gender, conditions).
+    - preprocessor (ColumnTransformer): Pipeline for scaling numerical and one-hot encoding categorical features.
+
+    Methods:
+    - process_patient_data(patient_data: dict | pd.Series | pd.DataFrame) -> np.ndarray:
+        Transforms a single patient's data into a feature vector usable by the model.
+
+    - get_available_drugs() -> list[str]:
+        Returns the list of all available drug IDs from the drug dataset.
+
+    - get_drug_effectiveness(drug_id: str, patient_state: np.ndarray) -> float:
+        Computes a reward-like effectiveness score for a drug based on patient conditions,
+        matching to drug indications and contraindications.
+
+    Note:
+    - Blood pressure is split into 'systolic' and 'diastolic' and included in the numeric features.
+    - Effectiveness is normalized between 0 and 1.
+    """
+    
     def __init__(self):
         # Load data from data directory
         self.patient_data = pd.read_csv('DQN/data/patient_data_1000.csv')
